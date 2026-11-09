@@ -1,0 +1,1494 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CKA Mock Exam</title><style>
+:root{--bg:#f0f4f8;--card:#fff;--fg:#1a202c;--muted:#5a6578;--line:#e2e8f0;--accent:#326ce5;--pre:#0f172a;--prefg:#e2e8f0;--soft:#eef5ff;--ok:#ecfdf3;--okline:#16a34a;--okfg:#14532d}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0b1220;--card:#131c2e;--fg:#e5e9f0;--muted:#9aa5b8;--line:#25314a;--accent:#6b9bff;--pre:#060b16;--prefg:#dbe4f3;--soft:#16223a;--ok:#0f2a1c;--okline:#22c55e;--okfg:#bbf7d0}}
+:root[data-theme="dark"]{--bg:#0b1220;--card:#131c2e;--fg:#e5e9f0;--muted:#9aa5b8;--line:#25314a;--accent:#6b9bff;--pre:#060b16;--prefg:#dbe4f3;--soft:#16223a;--ok:#0f2a1c;--okline:#22c55e;--okfg:#bbf7d0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--fg);line-height:1.6}
+header{background:linear-gradient(135deg,#326ce5 0%,#1a3a6e 100%);color:#fff;padding:2rem 1rem 1.6rem;text-align:center}
+header h1{font-size:1.7rem;margin-bottom:.25rem}header .subtitle{opacity:.85}
+.container{max-width:920px;margin:1.5rem auto 3rem;padding:0 16px}
+.notice{background:var(--ok);border-left:4px solid var(--okline);color:var(--okfg);padding:.85rem 1.1rem;border-radius:6px;margin-bottom:1rem;font-size:.92rem}
+.notice a{color:inherit}
+.bar{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:8px 16px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.bar button{font:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--bg);color:var(--fg);padding:4px 12px;border-radius:5px;cursor:pointer}
+.bar button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 1.2rem}
+.toc a{font-size:.82rem;text-decoration:none;background:var(--card);border:1px solid var(--line);color:var(--fg);padding:2px 9px;border-radius:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-bottom:1.4rem;overflow:hidden;scroll-margin-top:56px}
+.card-header{background:linear-gradient(90deg,#326ce5 0%,#4a8af4 100%);color:#fff;padding:.7rem 1.1rem;display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap}
+.card-header .q-number{font-weight:700}
+.card-body{padding:1.1rem}
+h4{font-size:.9rem;margin:1rem 0 .35rem;color:var(--accent)}
+pre{background:var(--pre);color:var(--prefg);padding:.75rem .9rem;border-radius:6px;overflow-x:auto;font-size:.82rem;line-height:1.5;white-space:pre}
+.question{white-space:pre-wrap;background:var(--soft);border-left:3px solid var(--accent);padding:.7rem 1rem;border-radius:0 6px 6px 0;font-size:.92rem}
+details summary{cursor:pointer;font-weight:600;color:var(--accent);margin-top:.9rem}
+body.answers details.sol{}
+code{background:var(--soft);padding:0 4px;border-radius:3px}
+footer{text-align:center;color:var(--muted);font-size:.82rem;padding:1rem 16px 2rem}
+</style></head><body>
+<header><h1>CKA Mock Exam v2.0 (cloudhein)</h1><div class="subtitle">17 hands-on CKA tasks &mdash; source: <a style="color:#fff" href="https://github.com/cloudhein/CKA/tree/main/00-mock-exam-questions-v2.0" target="_blank" rel="noopener">github.com/cloudhein/CKA/tree/main/00-mock-exam-questions-v2.0</a></div></header>
+<div class="bar"><button id="b-open" type="button">Show all answers</button><button id="b-close" type="button">Hide all answers</button><button id="b-theme" type="button">Light / dark</button></div>
+<div class="container">
+<div class="notice"><strong>Run the labs on Killercoda</strong> (<a href="https://killercoda.com/playgrounds/scenario/cka" target="_blank" rel="noopener">CKA playground</a>) &mdash; paste one line:
+<pre style="margin-top:.4rem">curl -sLO https://raw.githubusercontent.com/yengibaryanrafayel/cka-test-pub/main/cka-b.sh &amp;&amp; bash cka-b.sh &amp;&amp; cka-b list</pre>
+<pre style="margin-top:.4rem">cka-b setup 1       # create the lab + print the task
+cka-b check 1       # check your work   (cka-b check all = every task)
+cka-b solution 1    # show the solution
+cka-b cleanup 1     # reset the lab</pre>
+<p style="margin-top:.5rem">The repo has only runbooks, so the setup / check / cleanup scripts here were written for Killercoda. Tasks 5, 6 (CNI) and 16 (API server) break the cluster: do them last or in a fresh session.</p></div>
+<div class="toc">
+<a href="#q1">1. NGINX TLS Configuration</a>
+<a href="#q2">2. Ingress to Gateway API Migration</a>
+<a href="#q3">3. Horizontal Pod Autoscaler</a>
+<a href="#q4">4. Ingress Resource Creation</a>
+<a href="#q5">5. CNI Installation</a>
+<a href="#q6">6. CNI with Network Policy Support</a>
+<a href="#q7">7. Argo CD Helm Installation</a>
+<a href="#q8">8. PriorityClass and Deployment Patching</a>
+<a href="#q9">9. Service Exposure and NodePort</a>
+<a href="#q10">10. StorageClass Configuration</a>
+<a href="#q11">11. Sidecar Container Integration</a>
+<a href="#q12">12. Cert-Manager CRD Verification</a>
+<a href="#q13">13. WordPress Resource Allocation</a>
+<a href="#q14">14. MariaDB Data Recovery</a>
+<a href="#q15">15. Linux System Preparation (cri-dockerd)</a>
+<a href="#q16">16. Cluster Component Recovery</a>
+<a href="#q17">17. Network Policy Implementation</a>
+</div>
+<div class="card" id="q1"><div class="card-header"><span class="q-number">Question 1</span><span>NGINX TLS Configuration</span></div><div class="card-body">
+<div class="question">Question 1: NGINX TLS Configuration
+An NGINX Deployment named nginx-static is running in the nginx-static namespace.
+It is configured using a ConfigMap named nginx-config.
+
+Task
+Update the nginx-config ConfigMap to allow only TLSv1.3 connections.
+Re-create, restart, or scale resources as necessary.
+
+Verify (should FAIL as TLSv1.2 is no longer allowed):
+  curl -k --tls-max 1.2 https://web.k8s.local/
+and should still work:
+  curl -k --tlsv1.3 https://web.k8s.local/
+(-k because the lab certificate is self-signed)</div>
+<h4>On Killercoda</h4><pre>cka-b setup 1
+# ... solve it ...
+cka-b check 1</pre>
+<details class="sol"><summary>Show answer</summary><pre># 1. Edit the ConfigMap: keep only TLSv1.3
+k -n nginx-static edit cm nginx-config
+#     ssl_protocols TLSv1.3;
+
+# 2. nginx reads the config only at start -&gt; restart the pods
+k -n nginx-static rollout restart deploy nginx-static
+k -n nginx-static rollout status deploy nginx-static
+
+# 3. Verify
+curl -k --tls-max 1.2 https://web.k8s.local/   # error: tlsv1 alert protocol version
+curl -k --tlsv1.3 https://web.k8s.local/       # Hello from nginx
+</pre></details>
+<details class="sol"><summary>What the setup creates</summary><pre>#!/bin/bash
+set -e
+kubectl create ns nginx-static --dry-run=client -o yaml | kubectl apply -f -
+D=$(mktemp -d)
+openssl req -x509 -nodes -days 90 -newkey rsa:2048 -keyout $D/tls.key -out $D/tls.crt \
+  -subj &quot;/CN=web.k8s.local&quot; -addext &quot;subjectAltName=DNS:web.k8s.local&quot; 2&gt;/dev/null
+kubectl -n nginx-static create secret tls nginx-tls-secret --cert=$D/tls.crt --key=$D/tls.key \
+  --dry-run=client -o yaml | kubectl apply -f -
+rm -rf $D
+kubectl apply -f - &lt;&lt;&#x27;EOF&#x27;
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: nginx-static
+data:
+  default.conf: |
+    server {
+      listen 443 ssl;
+      server_name localhost;
+
+      ssl_protocols TLSv1.2 TLSv1.3;
+      ssl_certificate     /etc/nginx/ssl/tls.crt;
+      ssl_certificate_key /etc/nginx/ssl/tls.key;
+
+      location / {
+        return 200 &#x27;Hello from nginx&#x27;;
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-static
+  namespace: nginx-static
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-static
+  template:
+    metadata:
+      labels:
+        app: nginx-static
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.24
+        volumeMounts:
+        - name: config
+          mountPath: /etc/nginx/conf.d
+        - name: tls
+          mountPath: /etc/nginx/ssl
+      volumes:
+      - name: config
+        configMap:
+          name: nginx-config
+      - name: tls
+        secret:
+          secretName: nginx-tls-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: nginx-static
+spec:
+  type: NodePort
+  selector:
+    app: nginx-static
+  ports:
+  - port: 443
+    targetPort: 443
+    nodePort: 31337
+EOF
+kubectl -n nginx-static rollout status deploy nginx-static --timeout=180s
+IP=$(kubectl -n nginx-static get svc nginx-service -o jsonpath=&#x27;{.spec.clusterIP}&#x27;)
+sudo sed -i &#x27;/web.k8s.local/d&#x27; /etc/hosts
+echo &quot;$IP web.k8s.local&quot; | sudo tee -a /etc/hosts &gt;/dev/null
+echo &quot;[OK] /etc/hosts: $IP web.k8s.local   (try: curl -k https://web.k8s.local/)&quot;
+</pre></details>
+</div></div>
+<div class="card" id="q2"><div class="card-header"><span class="q-number">Question 2</span><span>Ingress to Gateway API Migration</span></div><div class="card-body">
+<div class="question">Question 2: Ingress to Gateway API Migration
+Migrate an existing web application from Ingress to Gateway API while maintaining
+HTTPS functionality. A GatewayClass named nginx is installed in the cluster.
+Everything is in the default namespace.
+
+Tasks
+1. Create a Gateway named web-gateway with hostname gateway.web.k8s.local that maintains
+   the existing TLS and listener configuration from the existing Ingress resource named web
+2. Create an HTTPRoute named web-route with hostname gateway.web.k8s.local that maintains
+   the existing routing rules from the current Ingress resource named web
+3. Delete the existing Ingress resource named web
+
+Note: this lab has no Gateway controller, so &#x27;curl https://gateway.web.k8s.local/&#x27; cannot work
+here - the check validates the resources.</div>
+<h4>On Killercoda</h4><pre>cka-b setup 2
+# ... solve it ...
+cka-b check 2</pre>
+<details class="sol"><summary>Show answer</summary><pre># Look at the Ingress you migrate from
+k get ingress web -o yaml        # host, tls secret, path /, backend webapp:80
+
+cat &lt;&lt;&#x27;EOF&#x27; &gt; gw.yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: web-gateway
+spec:
+  gatewayClassName: nginx
+  listeners:
+  - name: https
+    protocol: HTTPS
+    port: 443
+    hostname: gateway.web.k8s.local
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: gw-api-tls-secret
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: web-route
+spec:
+  parentRefs:
+  - name: web-gateway
+  hostnames:
+  - gateway.web.k8s.local
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: webapp
+      port: 80
+EOF
+k apply -f gw.yaml
+k delete ingress web
+k get gateway,httproute
+# (repo uses port 8443 only because its Traefik controller listens there; the exam wants 443)
+</pre></details>
+<details class="sol"><summary>What the setup creates</summary><pre>#!/bin/bash
+set -e
+echo &quot;Installing Gateway API CRDs (v1.3.0)...&quot;
+kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.3.0/standard-install.yaml &gt;/dev/null
+D=$(mktemp -d)
+openssl req -x509 -nodes -days 90 -newkey rsa:2048 -keyout $D/tls.key -out $D/tls.crt \
+  -subj &quot;/CN=gateway.web.k8s.local&quot; -addext &quot;subjectAltName=DNS:gateway.web.k8s.local&quot; 2&gt;/dev/null
+kubectl create secret tls gw-api-tls-secret --cert=$D/tls.crt --key=$D/tls.key --dry-run=client -o yaml | kubectl apply -f -
+rm -rf $D
+kubectl apply -f - &lt;&lt;&#x27;EOF&#x27;
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - name: web
+        image: nginx
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp
+spec:
+  selector:
+    app: webapp
+  ports:
+  - port: 80
+    targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: &quot;true&quot;
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - gateway.web.k8s.local
+    secretName: gw-api-tls-secret
+  rules:
+  - host: gateway.web.k8s.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: webapp
+            port:
+              number: 80
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: nginx
+spec:
+  controllerName: example.net/nginx-gateway-controller
+EOF
+echo &quot;[OK] Ingress &#x27;web&#x27;, Service &#x27;webapp&#x27;, Secret &#x27;gw-api-tls-secret&#x27;, GatewayClass &#x27;nginx&#x27; created&quot;
+</pre></details>
+</div></div>
+<div class="card" id="q3"><div class="card-header"><span class="q-number">Question 3</span><span>Horizontal Pod Autoscaler</span></div><div class="card-body">
+<div class="question">Question 3: Horizontal Pod Autoscaler
+Create a new HorizontalPodAutoscaler (HPA) named apache-server in the autoscale namespace.
+
+Requirements
+- Target the existing Deployment called apache-server in the autoscale namespace
+- Set the HPA to target 50% CPU usage per Pod
+- Configure minimum 1 Pod and maximum 4 Pods
+- Set the downscale stabilization window to 30 seconds</div>
+<h4>On Killercoda</h4><pre>cka-b setup 3
+# ... solve it ...
+cka-b check 3</pre>
+<details class="sol"><summary>Show answer</summary><pre># &#x27;kubectl autoscale&#x27; cannot set the stabilization window -&gt; start from it, then add behavior
+k -n autoscale autoscale deploy apache-server --name=apache-server --cpu-percent=50 --min=1 --max=4 \
+  --dry-run=client -o yaml &gt; hpa.yaml
+# or write it directly:
+cat &lt;&lt;&#x27;EOF&#x27; &gt; hpa.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: apache-server
+  namespace: autoscale
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: apache-server
+  minReplicas: 1
+  maxReplicas: 4
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 30
+EOF
+k apply -f hpa.yaml
+k -n autoscale get hpa          # TARGETS cpu: 0%/50% after ~1 min
+</pre></details>
+<details class="sol"><summary>What the setup creates</summary><pre>#!/bin/bash
+set -e
+echo &quot;Installing metrics-server (HPA needs it)...&quot;
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml &gt;/dev/null
+kubectl -n kube-system get deploy metrics-server -o jsonpath=&#x27;{.spec.template.spec.containers[0].args}&#x27; | grep -q kubelet-insecure-tls || \
+  kubectl -n kube-system patch deploy metrics-server --type=json \
+    -p=&#x27;[{&quot;op&quot;:&quot;add&quot;,&quot;path&quot;:&quot;/spec/template/spec/containers/0/args/-&quot;,&quot;value&quot;:&quot;--kubelet-insecure-tls&quot;}]&#x27;
+kubectl apply -f - &lt;&lt;&#x27;EOF&#x27;
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: autoscale
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-server
+  namespace: autoscale
+spec:
+  selector:
+    matchLabels:
+      run: php-apache
+  template:
+    metadata:
+      labels:
+        run: php-apache
+    spec:
+      containers:
+      - name: php-apache
+        image: registry.k8s.io/hpa-example
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: php-apache
+  namespace: autoscale
+  labels:
+    run: php-apache
+spec:
+  ports:
+  - port: 80
+  selector:
+    run: php-apache
+EOF
+kubectl -n kube-system rollout status deploy metrics-server --timeout=180s || true
+echo &quot;[OK] Deployment autoscale/apache-server ready for an HPA&quot;
+</pre></details>
+</div></div>
+<div class="card" id="q4"><div class="card-header"><span class="q-number">Question 4</span><span>Ingress Resource Creation</span></div><div class="card-body">
+<div class="question">Question 4: Ingress Resource Creation
+Create a new Ingress resource echo in the echo-sound namespace.
+
+Requirements
+- Expose Service echoserver-service on http://example.org/echo
+- Use Service port 8080
+
+Verify (should return 200):
+  curl -o /dev/null -s -w &quot;%{http_code}\n&quot; http://example.org/echo
+In this lab the ingress controller listens on a NodePort, so use:
+  NP=$(kubectl -n ingress-nginx get svc ingress-nginx-controller -o jsonpath=&#x27;{.spec.ports[?(@.port==80)].nodePort}&#x27;)
+  curl -o /dev/null -s -w &quot;%{http_code}\n&quot; -H &quot;Host: example.org&quot; http://node01:$NP/echo</div>
+<h4>On Killercoda</h4><pre>cka-b setup 4
+# ... solve it ...
+cka-b check 4</pre>
+<details class="sol"><summary>Show answer</summary><pre>k create ingress echo -n echo-sound --class=nginx \
+  --rule=&quot;example.org/echo=echoserver-service:8080&quot;
+# (creates pathType Exact; Prefix also fine:  --rule=&quot;example.org/echo*=echoserver-service:8080&quot;)
+k -n echo-sound get ingress echo
+
+# test in this lab (controller is on a NodePort):
+NP=$(k -n ingress-nginx get svc ingress-nginx-controller -o jsonpath=&#x27;{.spec.ports[?(@.port==80)].nodePort}&#x27;)
+curl -o /dev/null -s -w &quot;%{http_code}\n&quot; -H &quot;Host: example.org&quot; http://node01:$NP/echo     # 200
+</pre></details>
+<details class="sol"><summary>What the setup creates</summary><pre>#!/bin/bash
+set -e
+echo &quot;Installing ingress-nginx controller (NodePort)...&quot;
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.3/deploy/static/provider/baremetal/deploy.yaml &gt;/dev/null
+kubectl apply -f - &lt;&lt;&#x27;EOF&#x27;
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: echo-sound
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echoserver
+  namespace: echo-sound
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: echoserver
+  template:
+    metadata:
+      labels:
+        app: echoserver
+    spec:
+      containers:
+      - name: echoserver
+        image: registry.k8s.io/echoserver:1.10
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: echoserver-service
+  namespace: echo-sound
+spec:
+  selector:
+    app: echoserver
+  ports:
+  - port: 8080
+    targetPort: 8080
+EOF
+echo &quot;Waiting for the ingress controller...&quot;
+kubectl -n ingress-nginx rollout status deploy ingress-nginx-controller --timeout=240s || true
+kubectl get ingressclass
+</pre></details>
+</div></div>
+<div class="card" id="q5"><div class="card-header"><span class="q-number">Question 5</span><span>CNI Installation</span></div><div class="card-body">
+<div class="question">Question 5: Container Network Interface (CNI) Installation
+Install and configure a CNI of your choice that meets the specified requirements.
+Choose one of the following:
+
+Flannel (v0.26.1) using the manifest:
+  https://github.com/flannel-io/flannel/releases/download/v0.26.1/kube-flannel.yml
+Calico (v3.28.2) using the manifest:
+  https://raw.githubusercontent.com/projectcalico/calico/v3.28.2/manifests/tigera-operator.yaml
+
+Requirement: ensure the selected CNI is properly installed and configured in the cluster.
+
+LAB NOTE: setup removed Killercoda&#x27;s Cilium. Do this task last or in a fresh session.</div>
+<h4>On Killercoda</h4><pre>cka-b setup 5
+# ... solve it ...
+cka-b check 5</pre>
+<details class="sol"><summary>Show answer</summary><pre># 1. find the pod CIDR (Killercoda: 192.168.0.0/16)
+grep cluster-cidr /etc/kubernetes/manifests/kube-controller-manager.yaml
+k get nodes -o jsonpath=&#x27;{.items[*].spec.podCIDR}&#x27;; echo
+
+# ---- Option A: Flannel ----
+wget https://github.com/flannel-io/flannel/releases/download/v0.26.1/kube-flannel.yml
+vim kube-flannel.yml          # net-conf.json: &quot;Network&quot;: &quot;192.168.0.0/16&quot;   (default is 10.244.0.0/16)
+k apply -f kube-flannel.yml
+k -n kube-flannel get pods
+
+# ---- Option B: Calico ----
+k create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.2/manifests/tigera-operator.yaml
+wget https://raw.githubusercontent.com/projectcalico/calico/v3.28.2/manifests/custom-resources.yaml
+vim custom-resources.yaml     # cidr: 192.168.0.0/16  (POD CIDR, not the service CIDR 10.96.0.0/12!)
+k create -f custom-resources.yaml
+watch kubectl get pods -n calico-system
+
+# 2. verify
+k get nodes                   # Ready
+k -n kube-system get pods -l k8s-app=kube-dns
+</pre></details>
+<details class="sol"><summary>What the setup creates</summary><pre>#!/bin/bash
+# Killercoda ships Cilium. Remove it so you can install Flannel/Calico yourself.
+kubectl -n kube-system delete daemonset cilium cilium-envoy --ignore-not-found
+kubectl -n kube-system delete deployment cilium-operator --ignore-not-found
+kubectl -n kube-system delete configmap cilium-config --ignore-not-found
+kubectl -n kube-system delete serviceaccount cilium cilium-operator --ignore-not-found
+kubectl delete clusterrole cilium cilium-operator --ignore-not-found
+kubectl delete clusterrolebinding cilium cilium-operator --ignore-not-found
+SSH=&quot;ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null node01&quot;
+CLEAN=&#x27;rm -f /etc/cni/net.d/*cilium*; for i in cilium_vxlan cilium_host cilium_net vxlan.calico flannel.1 cni0; do ip link delete $i 2&gt;/dev/null; done; true&#x27;
+sudo bash -c &quot;$CLEAN&quot;; $SSH &quot;sudo bash -c &#x27;$CLEAN&#x27;&quot; || true
+# the Cilium taint would block every pod after the new CNI is up (Killercoda-only problem)
+kubectl taint nodes --all node.cilium.io/agent-not-ready- 2&gt;/dev/null || true
+kubectl -n kube-system rollout restart deployment coredns
+echo
+echo &quot;Cilium removed - nodes will become NotReady until you install a CNI.&quot;
+echo &quot;Pod CIDR of this cluster:&quot;
+kubectl get nodes -o jsonpath=&#x27;{range .items[*]}{.metadata.name}{&quot;  &quot;}{.spec.podCIDR}{&quot;\n&quot;}{end}&#x27;
+</pre></details>
+</div></div>
+<div class="card" id="q6"><div class="card-header"><span class="q-number">Question 6</span><span>CNI with Network Policy Support</span></div><div class="card-body">
+<div class="question">Question 6: CNI Installation with Network Policy Support
+Install and configure a CNI of your choice that meets the specified requirements.
+Choose one of the following:
+
+Flannel using the manifest:
+  https://github.com/flannel-io/flannel/releases/download/v0.26.1/kube-flannel.yml
+Calico using the manifest:
+  https://raw.githubusercontent.com/projectcalico/calico/v3.29.2/manifests/tigera-operator.yaml
+
+The CNI you choose must:
+- Let Pods communicate with each other
+- Support Network Policy enforcement
+- Install from manifest files (do not use Helm)
+
+LAB NOTE: setup removed Killercoda&#x27;s Cilium. Do this task last or in a fresh session.</div>
+<h4>On Killercoda</h4><pre>cka-b setup 6
+# ... solve it ...
+cka-b check 6</pre>
+<details class="sol"><summary>Show answer</summary><pre># Flannel does NOT support NetworkPolicy -&gt; choose Calico
+k create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.2/manifests/tigera-operator.yaml
+wget https://raw.githubusercontent.com/projectcalico/calico/v3.29.2/manifests/custom-resources.yaml
+
+# pod CIDR (Killercoda: 192.168.0.0/16) - NOT --service-cluster-ip-range
+grep cluster-cidr /etc/kubernetes/manifests/kube-controller-manager.yaml
+vim custom-resources.yaml          # cidr: 192.168.0.0/16
+k create -f custom-resources.yaml
+
+watch kubectl get pods -n calico-system   # calico-node 1/1 Running
+k get nodes                               # Ready
+k get tigerastatus
+# operator logs if stuck:  k logs -n tigera-operator deploy/tigera-operator | tail
+</pre></details>
+<details class="sol"><summary>What the setup creates</summary><pre>#!/bin/bash
+# Killercoda ships Cilium. Remove it so you can install Flannel/Calico yourself.
+kubectl -n kube-system delete daemonset cilium cilium-envoy --ignore-not-found
+kubectl -n kube-system delete deployment cilium-operator --ignore-not-found
+kubectl -n kube-system delete configmap cilium-config --ignore-not-found
+kubectl -n kube-system delete serviceaccount cilium cilium-operator --ignore-not-found
+kubectl delete clusterrole cilium cilium-operator --ignore-not-found
+kubectl delete clusterrolebinding cilium cilium-operator --ignore-not-found
+SSH=&quot;ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null node01&quot;
+CLEAN=&#x27;rm -f /etc/cni/net.d/*cilium*; for i in cilium_vxlan cilium_host cilium_net vxlan.calico flannel.1 cni0; do ip link delete $i 2&gt;/dev/null; done; true&#x27;
+sudo bash -c &quot;$CLEAN&quot;; $SSH &quot;sudo bash -c &#x27;$CLEAN&#x27;&quot; || true
+# the Cilium taint would block every pod after the new CNI is up (Killercoda-only problem)
+kubectl taint nodes --all node.cilium.io/agent-not-ready- 2&gt;/dev/null || true
+kubectl -n kube-system rollout restart deployment coredns
+echo
+echo &quot;Cilium removed - nodes will become NotReady until you install a CNI.&quot;
+echo &quot;Pod CIDR of this cluster:&quot;
+kubectl get nodes -o jsonpath=&#x27;{range .items[*]}{.metadata.name}{&quot;  &quot;}{.spec.podCIDR}{&quot;\n&quot;}{end}&#x27;
+</pre></details>
+</div></div>
+<div class="card" id="q7"><div class="card-header"><span class="q-number">Question 7</span><span>Argo CD Helm Installation</span></div><div class="card-body">
+<div class="question">Question 7: Argo CD Helm Installation
+Install Argo CD in the cluster using Helm.
+
+Tasks
+1. Add the official Argo CD Helm repository with the name argo:
+     https://argoproj.github.io/argo-helm
+2. The Argo CD CRDs have already been pre-installed in the cluster
+3. Generate a Helm template of the Argo CD Helm chart version 7.7.3 for the argocd
+   namespace and save to /argo-helm.yaml
+4. Configure the chart to not install CRDs
+5. Install Argo CD using Helm with release name argocd using version 7.7.3
+6. Install it in the argocd namespace and configure it to not install CRDs
+
+Note: You do not need to configure access to the Argo CD server UI.</div>
+<h4>On Killercoda</h4><pre>cka-b setup 7
+# ... solve it ...
+cka-b check 7</pre>
+<details class="sol"><summary>Show answer</summary><pre>helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+helm search repo argo/argo-cd --versions | grep 7.7.3
+
+# template (no CRDs) -&gt; /argo-helm.yaml   (note: /argo-helm.yaml, not /root/)
+helm template argocd argo/argo-cd --version 7.7.3 --namespace argocd \
+  --set crds.install=false &gt; /argo-helm.yaml
+grep -c &#x27;kind: CustomResourceDefinition&#x27; /argo-helm.yaml     # 0
+
+# install
+helm install argocd argo/argo-cd --version 7.7.3 -n argocd --create-namespace \
+  --set crds.install=false
+helm list -n argocd
+# --skip-crds does NOT help here: this chart ships CRDs as templates controlled by crds.install
+</pre></details>
+<details class="sol"><summary>What the setup creates</summary><pre>#!/bin/bash
+set -e
+if ! command -v helm &gt;/dev/null; then
+  echo &quot;Installing helm...&quot;; curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+fi
+echo &quot;Pre-installing the Argo CD CRDs (v2.13.0)...&quot;
+for u in https://raw.githubusercontent.com/argoproj/argo-cd/v2.13.0/manifests/crds/application-crd.yaml https://raw.githubusercontent.com/argoproj/argo-cd/v2.13.0/manifests/crds/applicationset-crd.yaml https://raw.githubusercontent.com/argoproj/argo-cd/v2.13.0/manifests/crds/appproject-crd.yaml; do kubectl apply --server-side --force-conflicts -f &quot;$u&quot; &gt;/dev/null; done
+kubectl get crd | grep argoproj.io
+helm repo remove argo &gt;/dev/null 2&gt;&amp;1 || true
+rm -f /argo-helm.yaml
+echo &quot;[OK] Argo CD CRDs are pre-installed. helm repo &#x27;argo&#x27; is not added yet.&quot;
+</pre></details>
+</div></div>
+<div class="card" id="q8"><div class="card-header"><span class="q-number">Question 8</span><span>PriorityClass and Deployment Patching</span></div><div class="card-body">
+<div class="question">Question 8: PriorityClass and Deployment Patching
+Create a new PriorityClass named high-priority for user-workloads with a value that is
+one less than the highest existing user-defined priority class value.
+
+Tasks
+1. Patch the existing Deployment busybox-logger running in the priority namespace to use
+   the high-priority priority class
+2. Ensure that the busybox-logger Deployment rolls out successfully with the new priority class set
+3. It is expected that Pods from other Deployments running in the priority namespace are evicted
+4. Do not modify other Deployments running in the priority namespace</div>
+<h4>On Killercoda</h4><pre>cka-b setup 8
+# ... solve it ...
+cka-b check 8</pre>
+<details class="sol"><summary>Show answer</summary><pre>k get pc --sort-by=.value     # highest user-defined: very-high-priority = 800 (ignore system-*)
+k create priorityclass high-priority --value=799 --description=&quot;high priority user workloads&quot;
+
+k -n priority patch deploy busybox-logger \
+  -p &#x27;{&quot;spec&quot;:{&quot;template&quot;:{&quot;spec&quot;:{&quot;priorityClassName&quot;:&quot;high-priority&quot;}}}}&#x27;
+k -n priority rollout status deploy busybox-logger
+k -n priority get pods -o custom-columns=NAME:.metadata.name,PC:.spec.priorityClassName,STATUS:.status.phase
+# patching the template already triggers a rollout - no &#x27;rollout restart&#x27; needed
+</pre></details>
+<details class="sol"><summary>What the setup creates</summary><pre>#!/bin/bash
+set -e
+kubectl create ns priority --dry-run=client -o yaml | kubectl apply -f -
+kubectl delete priorityclass high-priority --ignore-not-found
+kubectl apply -f - &lt;&lt;&#x27;EOF&#x27;
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: medium-priority
+value: 500
+preemptionPolicy: PreemptLowerPriority
+description: &quot;Medium priority for regular workloads&quot;
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: low-priority
+value: 100
+preemptionPolicy: PreemptLowerPriority
+description: &quot;Low priority for background tasks&quot;
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: very-high-priority
+value: 800
+preemptionPolicy: PreemptLowerPriority
+description: &quot;Very high priority for important workloads&quot;
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox-logger
+  namespace: priority
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: busybox-logger
+  template:
+    metadata:
+      labels:
+        app: busybox-logger
+    spec:
+      containers:
+      - name: busybox
+        image: busybox:1.35
+        command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;while true; do echo \&quot;$(date): busybox-logger running\&quot;; sleep 10; done&quot;]
+        resources:
+          requests: {memory: &quot;64Mi&quot;, cpu: &quot;50m&quot;}
+          limits: {memory: &quot;128Mi&quot;, cpu: &quot;100m&quot;}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: low-priority-app
+  namespace: priority
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: low-priority-app
+  template:
+    metadata:
+      labels:
+        app: low-priority-app
+    spec:
+      priorityClassName: low-priority
+      containers:
+      - name: nginx
+        image: nginx:1.20
+        resources:
+          requests: {memory: &quot;128Mi&quot;, cpu: &quot;100m&quot;}
+          limits: {memory: &quot;256Mi&quot;, cpu: &quot;200m&quot;}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: medium-priority-app
+  namespace: priority
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: medium-priority-app
+  template:
+    metadata:
+      labels:
+        app: medium-priority-app
+    spec:
+      priorityClassName: medium-priority
+      containers:
+      - name: httpd
+        image: httpd:2.4
+        resources:
+          requests: {memory: &quot;128Mi&quot;, cpu: &quot;100m&quot;}
+          limits: {memory: &quot;256Mi&quot;, cpu: &quot;200m&quot;}
+EOF
+kubectl -n priority patch deploy busybox-logger --type=json -p=&#x27;[{&quot;op&quot;:&quot;remove&quot;,&quot;path&quot;:&quot;/spec/template/spec/priorityClassName&quot;}]&#x27; 2&gt;/dev/null || true
+echo &quot;[OK] lab ready&quot;; kubectl get pc --sort-by=.value
+</pre></details>
+</div></div>
+<div class="card" id="q9"><div class="card-header"><span class="q-number">Question 9</span><span>Service Exposure and NodePort</span></div><div class="card-body">
+<div class="question">Question 9: Service Exposure and NodePort Configuration
+Reconfigure the existing Deployment front-end in namespace sp-culator to expose
+port 80/tcp of the existing container nginx.
+
+Tasks
+1. Create a new Service named front-end-svc exposing the container port 80/tcp
+2. Configure the new Service to also expose the individual pods via NodePort</div>
+<h4>On Killercoda</h4><pre>cka-b setup 9
+# ... solve it ...
+cka-b check 9</pre>
+<details class="sol"><summary>Show answer</summary><pre># 1. add the container port (patch, or k edit deploy front-end -n sp-culator)
+k -n sp-culator patch deploy front-end --type=json -p=&#x27;[{&quot;op&quot;:&quot;add&quot;,&quot;path&quot;:&quot;/spec/template/spec/containers/0/ports&quot;,&quot;value&quot;:[{&quot;containerPort&quot;:80,&quot;protocol&quot;:&quot;TCP&quot;}]}]&#x27;
+k -n sp-culator rollout status deploy front-end
+
+# 2. NodePort service
+k -n sp-culator expose deploy front-end --name=front-end-svc --port=80 --target-port=80 \
+  --protocol=TCP --type=NodePort
+k -n sp-culator get svc front-end-svc        # 80:3xxxx/TCP
+k -n sp-culator get ep front-end-svc         # 2 pod IPs
+curl -s -o /dev/null -w &quot;%{http_code}\n&quot; node01:$(k -n sp-culator get svc front-end-svc -o jsonpath=&#x27;{.spec.ports[0].nodePort}&#x27;)
+</pre></details>
+<details class="sol"><summary>What the setup creates</summary><pre>#!/bin/bash
+set -e
+kubectl delete svc front-end-svc -n sp-culator --ignore-not-found 2&gt;/dev/null
+kubectl apply -f - &lt;&lt;&#x27;EOF&#x27;
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sp-culator
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-end
+  namespace: sp-culator
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: front-end
+  template:
+    metadata:
+      labels:
+        app: front-end
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.24
+          command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;exec nginx -g &#x27;daemon off;&#x27;&quot;]
+EOF
+kubectl -n sp-culator patch deploy front-end --type=json -p=&#x27;[{&quot;op&quot;:&quot;remove&quot;,&quot;path&quot;:&quot;/spec/template/spec/containers/0/ports&quot;}]&#x27; 2&gt;/dev/null || true
+echo &quot;[OK] sp-culator/front-end created (no containerPort yet)&quot;
+</pre></details>
+</div></div>
+<div class="card" id="q10"><div class="card-header"><span class="q-number">Question 10</span><span>StorageClass Configuration</span></div><div class="card-body">
+<div class="question">Question 10: StorageClass Configuration
+Create a new StorageClass named low-latency that uses the existing provisioner rancher.io/local-path.
+
+Requirements
+- Set the VolumeBindingMode to WaitForFirstConsumer (mandatory)
+- Make the newly created StorageClass (low-latency) the default StorageClass in the cluster
+- Do NOT modify any existing Deployments or PersistentVolumeClaims</div>
+<h4>On Killercoda</h4><pre>cka-b setup 10
+# ... solve it ...
+cka-b check 10</pre>
+<details class="sol"><summary>Show answer</summary><pre>k get sc                       # local-path (default)  rancher.io/local-path
+cat &lt;&lt;&#x27;EOF&#x27; &gt; sc.yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: low-latency
+  annotations:
+    storageclass.kubernetes.io/is-default-class: &quot;true&quot;
+provisioner: rancher.io/local-path
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+EOF
+k apply -f sc.yaml
+# remove the old default
+k patch sc local-path -p &#x27;{&quot;metadata&quot;:{&quot;annotations&quot;:{&quot;storageclass.kubernetes.io/is-default-class&quot;:&quot;false&quot;}}}&#x27;
+k get sc                       # only low-latency (default)
+</pre></details>
+<details class="sol"><summary>What the setup creates</summary><pre>#!/bin/bash
+kubectl delete sc low-latency --ignore-not-found
+echo &quot;Existing StorageClasses:&quot;; kubectl get sc
+</pre></details>
+</div></div>
+<div class="card" id="q11"><div class="card-header"><span class="q-number">Question 11</span><span>Sidecar Container Integration</span></div><div class="card-body">
+<div class="question">Question 11: Sidecar Container Integration
+A legacy app needs to be integrated into the Kubernetes built-in logging architecture
+(i.e. kubectl logs). Adding a streaming co-located container is a good and common way
+to accomplish this requirement.
+
+Task
+Update the existing Deployment synergy-deployment (namespace synergy-env), adding a
+co-located container named sidecar using the busybox:stable image to the existing Pod.
+
+- The new co-located container must run the following command:
+    /bin/sh -c &quot;tail -n+1 -f /var/log/synergy-deployment.log&quot;
+- Use a Volume mounted at /var/log to make the log file synergy-deployment.log available
+  to the co-located container
+- Do not modify the specification of the existing container other than adding the
+  required volume mount</div>
+<h4>On Killercoda</h4><pre>cka-b setup 11
+# ... solve it ...
+cka-b check 11</pre>
+<details class="sol"><summary>Show answer</summary><pre>k -n synergy-env edit deploy synergy-deployment
+# add under spec.template.spec:
+      volumes:
+      - name: logs
+        emptyDir: {}
+# add to the existing container synergy-app (nothing else changed there):
+        volumeMounts:
+        - name: logs
+          mountPath: /var/log
+# add the new container:
+      - name: sidecar
+        image: busybox:stable
+        command: [&quot;/bin/sh&quot;, &quot;-c&quot;, &quot;tail -n+1 -f /var/log/synergy-deployment.log&quot;]
+        volumeMounts:
+        - name: logs
+          mountPath: /var/log
+
+k -n synergy-env rollout status deploy synergy-deployment
+k -n synergy-env logs deploy/synergy-deployment -c sidecar
+# (native sidecar also accepted: put it under initContainers: with restartPolicy: Always)
+</pre></details>
+<details class="sol"><summary>What the setup creates</summary><pre>#!/bin/bash
+set -e
+kubectl create ns synergy-env --dry-run=client -o yaml | kubectl apply -f -
+kubectl -n synergy-env delete deploy synergy-deployment --ignore-not-found
+kubectl apply -f - &lt;&lt;&#x27;EOF&#x27;
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: synergy-deployment
+  namespace: synergy-env
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: synergy
+  template:
+    metadata:
+      labels:
+        app: synergy
+    spec:
+      containers:
+      - name: synergy-app
+        image: busybox:stable
+        command: [&quot;/bin/sh&quot;, &quot;-c&quot;]
+        args:
+          - &gt;
+            while true; do
+              echo &quot;$(date) - Synergy App is running&quot; &gt;&gt; /var/log/synergy-deployment.log;
+              sleep 5;
+            done
+EOF
+echo &quot;[OK] synergy-env/synergy-deployment created (no volume yet)&quot;
+</pre></details>
+</div></div>
+<div class="card" id="q12"><div class="card-header"><span class="q-number">Question 12</span><span>Cert-Manager CRD Verification</span></div><div class="card-body">
+<div class="question">Question 12: Cert-Manager CRD Verification
+Verify the cert-manager application which has been deployed in the cluster.
+
+Tasks
+1. Create a list of all cert-manager Custom Resource Definitions (CRDs) and save it
+   to ~/resources.yaml
+2. Use kubectl&#x27;s default output format to list CRDs (do not set an output format)
+3. Using kubectl, extract the documentation for the subject specification field of the
+   Certificate Custom Resource and save it to ~/subject.yaml
+
+You may use any output format that kubectl supports for the documentation extraction.</div>
+<h4>On Killercoda</h4><pre>cka-b setup 12
+# ... solve it ...
+cka-b check 12</pre>
+<details class="sol"><summary>Show answer</summary><pre># default output (no -o), only cert-manager CRDs
+k get crd | grep cert-manager &gt; ~/resources.yaml
+cat ~/resources.yaml
+
+# docs of the subject field
+k explain certificate.spec.subject &gt; ~/subject.yaml
+# or the full tree:  k explain certificate.spec.subject --recursive &gt; ~/subject.yaml
+cat ~/subject.yaml
+</pre></details>
+<details class="sol"><summary>What the setup creates</summary><pre>#!/bin/bash
+set -e
+rm -f ~/resources.yaml ~/subject.yaml
+if kubectl get crd certificates.cert-manager.io &gt;/dev/null 2&gt;&amp;1 &amp;&amp; \
+   kubectl get crd certificates.cert-manager.io -o jsonpath=&#x27;{.metadata.labels.app}&#x27; | grep -q cert-manager; then
+  echo &quot;real cert-manager already installed&quot;; exit 0
+fi
+echo &quot;Installing a minimal &#x27;cert-manager&#x27; (just its CRDs, like the repo does)...&quot;
+kubectl apply -f - &lt;&lt;&#x27;EOF&#x27;
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: certificates.cert-manager.io
+spec:
+  group: cert-manager.io
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              description: &quot;Specification defines desired state of the certificate&quot;
+              type: object
+              properties:
+                subject:
+                  type: object
+                  description: &quot;Subject fields for the certificate&quot;
+                  properties:
+                    organizations:
+                      type: array
+                      items:
+                        type: string
+                    countries:
+                      type: array
+                      items:
+                        type: string
+                issuerRef:
+                  type: object
+                  description: &quot;Reference to issuer&quot;
+  scope: Namespaced
+  names:
+    kind: Certificate
+    plural: certificates
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: issuers.cert-manager.io
+spec:
+  group: cert-manager.io
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+  scope: Namespaced
+  names:
+    kind: Issuer
+    plural: issuers
+EOF
+</pre></details>
+</div></div>
+<div class="card" id="q13"><div class="card-header"><span class="q-number">Question 13</span><span>WordPress Resource Allocation</span></div><div class="card-body">
+<div class="question">Question 13: WordPress Resource Allocation
+A WordPress application with 3 replicas in the relative-fawn namespace runs on a node with
+(exam example) CPU: 1 core, Memory: 2015360Ki.
+LAB NOTE: use the REAL numbers of node01 here:  kubectl describe node node01
+
+Tasks
+- Divide node resources evenly across all 3 pods
+- Give each Pod a fair share of CPU and memory
+- Add enough overhead to keep the node stable
+- Use the exact same requests for both containers and init containers
+- You are not required to change any resource limits
+
+Tip: temporarily scale the WordPress Deployment to 0 replicas while updating the requests.
+
+Verify: WordPress keeps 3 replicas; all Pods are Running and Ready.</div>
+<h4>On Killercoda</h4><pre>cka-b setup 13
+# ... solve it ...
+cka-b check 13</pre>
+<details class="sol"><summary>Show answer</summary><pre>k describe node node01 | grep -A6 Allocatable            # e.g. cpu 1 , memory 1846528Ki (~1803Mi)
+k describe node node01 | grep -A8 &quot;Allocated resources&quot;  # what system pods already request
+
+# per pod = (allocatable - overhead) / 3     (init + main do NOT add up -&gt; divide by 3, not 6)
+#   cpu:    (1000m - 15%) / 3 = 283m -&gt; 250m
+#   memory: (1803Mi - 15%) / 3 = 510Mi -&gt; 500Mi     (repo: 2015360Ki node -&gt; 570Mi)
+
+k -n relative-fawn scale deploy wordpress --replicas=0
+k -n relative-fawn set resources deploy wordpress -c init-db,wordpress --requests=cpu=250m,memory=500Mi
+#   (or k edit: same &#x27;resources: requests:&#x27; block on initContainers[0] and containers[0])
+k -n relative-fawn scale deploy wordpress --replicas=3
+k -n relative-fawn get pods        # 3/3 Running; if one is Pending -&gt; lower the numbers
+</pre></details>
+<details class="sol"><summary>What the setup creates</summary><pre>#!/bin/bash
+set -e
+kubectl create ns relative-fawn --dry-run=client -o yaml | kubectl apply -f -
+kubectl -n relative-fawn delete deploy wordpress --ignore-not-found
+kubectl apply -f - &lt;&lt;&#x27;EOF&#x27;
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+  namespace: relative-fawn
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: wordpress
+  template:
+    metadata:
+      labels:
+        app: wordpress
+    spec:
+      initContainers:
+        - name: init-db
+          image: busybox
+          command: [&quot;sh&quot;, &quot;-c&quot;, &quot;echo init; sleep 10&quot;]
+      containers:
+        - name: wordpress
+          image: wordpress:php8.0-apache
+          ports:
+            - containerPort: 80
+EOF
+echo; kubectl describe node node01 | grep -A6 Allocatable
+</pre></details>
+</div></div>
+<div class="card" id="q14"><div class="card-header"><span class="q-number">Question 14</span><span>MariaDB Data Recovery</span></div><div class="card-body">
+<div class="question">Question 14: MariaDB Data Recovery
+A user accidentally deleted the MariaDB Deployment in the mariadb namespace, which was
+configured with persistent storage. Re-establish the Deployment while ensuring data is
+preserved by reusing the available PersistentVolume.
+A PersistentVolume already exists and is retained for reuse (only one PV exists).
+
+Tasks
+1. Create a PersistentVolumeClaim (PVC) named mariadb in the mariadb namespace with:
+   - Access mode: ReadWriteOnce
+   - Storage: 250Mi
+2. Edit the MariaDB Deploy file located at ~/mariadb-deploy.yaml to use the PVC
+3. Apply the updated Deployment file to the cluster
+4. Ensure the MariaDB Deployment is running and stable</div>
+<h4>On Killercoda</h4><pre>cka-b setup 14
+# ... solve it ...
+cka-b check 14</pre>
+<details class="sol"><summary>Show answer</summary><pre>k get pv mariadb-pv          # Available, STORAGECLASS empty
+cat &lt;&lt;&#x27;EOF&#x27; &gt; pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mariadb
+  namespace: mariadb
+spec:
+  storageClassName: &quot;&quot;       # must match the PV (empty) - otherwise the default SC is used
+  volumeName: mariadb-pv
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 250Mi
+EOF
+k apply -f pvc.yaml
+k -n mariadb get pvc          # Bound
+
+vim ~/mariadb-deploy.yaml
+#      volumes:
+#        - name: mariadb-storage
+#          persistentVolumeClaim:
+#            claimName: mariadb
+k apply -f ~/mariadb-deploy.yaml
+k -n mariadb rollout status deploy mariadb
+</pre></details>
+<details class="sol"><summary>What the setup creates</summary><pre>#!/bin/bash
+set -e
+kubectl create ns mariadb --dry-run=client -o yaml | kubectl apply -f -
+kubectl -n mariadb delete deploy mariadb --ignore-not-found
+kubectl -n mariadb delete pvc mariadb --ignore-not-found
+kubectl delete pv mariadb-pv --ignore-not-found
+kubectl apply -f - &lt;&lt;&#x27;EOF&#x27;
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mariadb-pv
+spec:
+  storageClassName: &quot;&quot;
+  capacity:
+    storage: 250Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: &quot;/mnt/data/mariadb&quot;
+  persistentVolumeReclaimPolicy: Retain
+EOF
+cat &gt; ~/mariadb-deploy.yaml &lt;&lt;&#x27;EOF&#x27;
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  namespace: mariadb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: mariadb:10.6
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: &quot;password&quot;
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: mariadb-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mariadb-storage
+          emptyDir: {}
+EOF
+echo &quot;[OK] PV mariadb-pv (Available) + ~/mariadb-deploy.yaml created&quot;; kubectl get pv
+</pre></details>
+</div></div>
+<div class="card" id="q15"><div class="card-header"><span class="q-number">Question 15</span><span>Linux System Preparation (cri-dockerd)</span></div><div class="card-body">
+<div class="question">Question 15: Linux System Preparation for Kubernetes
+Prepare a Linux system for Kubernetes. Docker is already installed, but you need to
+configure it for kubeadm.
+
+Set up cri-dockerd
+- Install the Debian package: ~/cri-dockerd_0.3.9.3-0.ubuntu-jammy_amd64.deb
+- Debian packages are installed using dpkg
+- Enable and start the cri-docker service
+
+Configure system parameters
+- Set net.bridge.bridge-nf-call-iptables to 1
+- Set net.ipv6.conf.all.forwarding to 1
+- Set net.ipv4.ip_forward to 1
+- Set net.netfilter.nf_conntrack_max to 131072</div>
+<h4>On Killercoda</h4><pre>cka-b setup 15
+# ... solve it ...
+cka-b check 15</pre>
+<details class="sol"><summary>Show answer</summary><pre>sudo dpkg -i ~/cri-dockerd_0.3.9.3-0.ubuntu-jammy_amd64.deb
+sudo systemctl enable --now cri-docker.service
+systemctl status cri-docker.service --no-pager
+
+cat &lt;&lt;&#x27;EOF&#x27; | sudo tee /etc/sysctl.d/kube.conf
+net.bridge.bridge-nf-call-iptables = 1
+net.ipv6.conf.all.forwarding = 1
+net.ipv4.ip_forward = 1
+net.netfilter.nf_conntrack_max = 131072
+EOF
+sudo sysctl --system            # or: sudo sysctl -p /etc/sysctl.d/kube.conf
+sysctl net.netfilter.nf_conntrack_max
+</pre></details>
+<details class="sol"><summary>What the setup creates</summary><pre>#!/bin/bash
+set -e
+cd ~
+[ -s cri-dockerd_0.3.9.3-0.ubuntu-jammy_amd64.deb ] || wget -q https://github.com/Mirantis/cri-dockerd/releases/download/v0.3.9/cri-dockerd_0.3.9.3-0.ubuntu-jammy_amd64.deb
+ls -l ~/cri-dockerd_0.3.9.3-0.ubuntu-jammy_amd64.deb
+command -v docker &gt;/dev/null || echo &quot;NOTE: docker is not installed here - the service may not start (exam has it).&quot;
+sudo modprobe br_netfilter 2&gt;/dev/null || true
+</pre></details>
+</div></div>
+<div class="card" id="q16"><div class="card-header"><span class="q-number">Question 16</span><span>Cluster Component Recovery</span></div><div class="card-body">
+<div class="question">Question 16: Cluster Component Recovery
+Fix a single-node cluster that got broken during machine migration.
+Background: the decommissioned cluster used an external etcd server.
+
+Tasks
+1. Identify the broken cluster components and investigate what caused them to break
+2. Fix the configuration of all broken cluster components
+3. Restart all necessary services and components for changes to take effect
+4. Ensure the cluster, single node, and all pods are Ready
+
+LAB NOTE: kubectl will not work until you fixed it. Work on controlplane.</div>
+<h4>On Killercoda</h4><pre>cka-b setup 16
+# ... solve it ...
+cka-b check 16</pre>
+<details class="sol"><summary>Show answer</summary><pre># kubectl is dead -&gt; look at the container runtime
+sudo crictl ps -a | grep -E &#x27;apiserver|etcd&#x27;
+sudo crictl logs $(sudo crictl ps -a --name kube-apiserver -q | head -1) 2&gt;&amp;1 | tail
+#   ... dial tcp 10.255.255.1:2379: i/o timeout
+# (or: ls /var/log/pods/ ; journalctl -u kubelet | grep apiserver)
+
+# etcd runs locally now (static pod) -&gt; where does it listen?
+grep -E &#x27;listen-client-urls|advertise-client-urls&#x27; /etc/kubernetes/manifests/etcd.yaml
+
+sudo vim /etc/kubernetes/manifests/kube-apiserver.yaml
+#   - --etcd-servers=https://127.0.0.1:2379
+
+# kubelet recreates the static pod by itself; if not:
+sudo systemctl restart kubelet
+watch sudo crictl ps            # kube-apiserver Running
+k get nodes; k -n kube-system get pods
+</pre></details>
+<details class="sol"><summary>What the setup creates</summary><pre>#!/bin/bash
+M=/etc/kubernetes/manifests/kube-apiserver.yaml
+[ -f /root/kube-apiserver.yaml.bak ] || sudo cp $M /root/kube-apiserver.yaml.bak
+sudo sed -i &#x27;s|--etcd-servers=.*|--etcd-servers=https://10.255.255.1:2379|&#x27; $M
+echo &quot;Breaking the cluster... (takes ~30-60s until the API server is gone)&quot;
+sleep 20
+kubectl get nodes --request-timeout=5s 2&gt;&amp;1 | tail -1
+</pre></details>
+</div></div>
+<div class="card" id="q17"><div class="card-header"><span class="q-number">Question 17</span><span>Network Policy Implementation</span></div><div class="card-body">
+<div class="question">Question 17: Network Policy Implementation
+You have frontend and backend Deployments in separate namespaces (frontend and backend).
+They need to communicate.
+
+Tasks
+1. Analyze: inspect the frontend and backend Deployments to understand their
+   communication requirements
+2. Apply: from the NetworkPolicy YAML files in the ~/netpol folder, choose one to apply.
+   It must:
+   - Allow communication between frontend and backend
+   - Be as restrictive as possible (least permissive)
+
+Important: do not delete or change the existing &quot;deny-all&quot; network policies.</div>
+<h4>On Killercoda</h4><pre>cka-b setup 17
+# ... solve it ...
+cka-b check 17</pre>
+<details class="sol"><summary>Show answer</summary><pre># 1. analyze
+k -n frontend get deploy,pods --show-labels     # app=frontend
+k -n backend  get deploy,svc,pods --show-labels # app=backend, port 80
+k get netpol -A                                 # deny-all in both + frontend egress already allowed
+cat ~/netpol/*.yaml
+
+# netpol-1: whole frontend NAMESPACE may connect        -&gt; too open
+# netpol-2: only pods app=frontend IN ns frontend, :80   -&gt; least permissive  &lt;-- this one
+# netpol-3: ingress: []                                  -&gt; allows nothing
+k apply -f ~/netpol/netpol-2.yaml
+
+# 2. test
+k -n frontend exec deploy/frontend -- curl -s -m 5 http://backend-svc.backend.svc.cluster.local | head -4
+</pre></details>
+<details class="sol"><summary>What the setup creates</summary><pre>#!/bin/bash
+set -e
+for ns in frontend backend; do kubectl create ns $ns --dry-run=client -o yaml | kubectl apply -f -; done
+# re-run: remove policies from an earlier attempt
+kubectl -n backend delete networkpolicy allow-all-from-frontend-to-backend allow-frontend-to-backend allow-nothing --ignore-not-found
+kubectl apply -f - &lt;&lt;&#x27;EOF&#x27;
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-all
+  namespace: frontend
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-all
+  namespace: backend
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns
+  namespace: frontend
+spec:
+  podSelector: {}
+  policyTypes: [Egress]
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - {protocol: UDP, port: 53}
+    - {protocol: TCP, port: 53}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-egress-to-backend
+  namespace: frontend
+spec:
+  podSelector:
+    matchLabels:
+      app: frontend
+  policyTypes: [Egress]
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: backend
+      podSelector:
+        matchLabels:
+          app: backend
+    ports:
+    - {protocol: TCP, port: 80}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels: {app: backend}
+  template:
+    metadata:
+      labels: {app: backend}
+    spec:
+      containers:
+      - name: backend
+        image: nginx:1.24
+        ports:
+        - containerPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels: {app: frontend}
+  template:
+    metadata:
+      labels: {app: frontend}
+    spec:
+      containers:
+      - name: frontend
+        image: nginx:1.24
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-svc
+  namespace: frontend
+spec:
+  selector: {app: frontend}
+  ports:
+  - {protocol: TCP, port: 80, targetPort: 80}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-svc
+  namespace: backend
+spec:
+  selector: {app: backend}
+  ports:
+  - {protocol: TCP, port: 80, targetPort: 80}
+EOF
+mkdir -p ~/netpol
+cat &gt; ~/netpol/netpol-1.yaml &lt;&lt;&#x27;EOF&#x27;
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-all-from-frontend-to-backend
+  namespace: backend
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: frontend
+      ports:
+        - protocol: TCP
+          port: 80
+EOF
+cat &gt; ~/netpol/netpol-2.yaml &lt;&lt;&#x27;EOF&#x27;
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-to-backend
+  namespace: backend
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: frontend
+          podSelector:
+            matchLabels:
+              app: frontend
+      ports:
+        - protocol: TCP
+          port: 80
+EOF
+cat &gt; ~/netpol/netpol-3.yaml &lt;&lt;&#x27;EOF&#x27;
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-nothing
+  namespace: backend
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+    - Ingress
+  ingress: []
+EOF
+kubectl -n backend rollout status deploy backend --timeout=120s
+kubectl -n frontend rollout status deploy frontend --timeout=120s
+ls ~/netpol
+</pre></details>
+</div></div>
+</div><footer>CKA Mock Exam v2.0 (cloudhein) &bull; <a href="https://github.com/cloudhein/CKA/tree/main/00-mock-exam-questions-v2.0">https://github.com/cloudhein/CKA/tree/main/00-mock-exam-questions-v2.0</a> &bull; Docs: <a href="https://kubernetes.io/docs/">kubernetes.io/docs</a></footer>
+<script>
+(function(){
+ function all(o){document.querySelectorAll('details.sol').forEach(function(d,i){if(d.querySelector('summary').textContent==='Show answer')d.open=o;});}
+ document.getElementById('b-open').onclick=function(){all(true)};
+ document.getElementById('b-close').onclick=function(){all(false)};
+ var r=document.documentElement;
+ try{var t=localStorage.getItem('theme');if(t)r.setAttribute('data-theme',t);}catch(e){}
+ document.getElementById('b-theme').onclick=function(){
+  var dark=r.getAttribute('data-theme')?r.getAttribute('data-theme')==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+  var t=dark?'light':'dark';r.setAttribute('data-theme',t);try{localStorage.setItem('theme',t)}catch(e){}};
+})();
+</script></body></html>
